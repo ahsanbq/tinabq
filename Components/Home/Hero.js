@@ -22,6 +22,7 @@ export default function Hero({ hero }) {
       "STARTUP",
       "ECOMMERCE",
       "SOFTWARE",
+      "Sports",
     ],
     loop: true, // Set to true for looping animation
     delaySpeed: 1500, // Delay between words
