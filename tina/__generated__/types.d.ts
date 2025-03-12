@@ -31,6 +31,7 @@ export type SystemInfo = {
   filename: Scalars['String']['output'];
   title?: Maybe<Scalars['String']['output']>;
   basename: Scalars['String']['output'];
+  hasReferences?: Maybe<Scalars['Boolean']['output']>;
   breadcrumbs: Array<Scalars['String']['output']>;
   path: Scalars['String']['output'];
   relativePath: Scalars['String']['output'];
@@ -81,6 +82,10 @@ export type Query = {
   collections: Array<Collection>;
   node: Node;
   document: DocumentNode;
+  user: User;
+  authenticate?: Maybe<UserUsers>;
+  authorize?: Maybe<UserUsers>;
+  userConnection: UserConnection;
   pages: Pages;
   pagesConnection: PagesConnection;
   global: Global;
@@ -108,6 +113,27 @@ export type QueryNodeArgs = {
 export type QueryDocumentArgs = {
   collection?: InputMaybe<Scalars['String']['input']>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryUserArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAuthenticateArgs = {
+  sub: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
+export type QueryUserConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<UserFilter>;
 };
 
 
@@ -156,6 +182,7 @@ export type QueryPortfolioConnectionArgs = {
 };
 
 export type DocumentFilter = {
+  user?: InputMaybe<UserFilter>;
   pages?: InputMaybe<PagesFilter>;
   global?: InputMaybe<GlobalFilter>;
   portfolio?: InputMaybe<PortfolioFilter>;
@@ -198,7 +225,59 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Pages | Global | Portfolio | Folder;
+export type DocumentNode = User | Pages | Global | Portfolio | Folder;
+
+export type UserUsersPassword = {
+  __typename?: 'UserUsersPassword';
+  value: Scalars['String']['output'];
+  passwordChangeRequired?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type UserUsers = {
+  __typename?: 'UserUsers';
+  username: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  password: UserUsersPassword;
+};
+
+export type User = Node & Document & {
+  __typename?: 'User';
+  users?: Maybe<Array<Maybe<UserUsers>>>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type StringFilter = {
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+  eq?: InputMaybe<Scalars['String']['input']>;
+  exists?: InputMaybe<Scalars['Boolean']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type UserUsersFilter = {
+  username?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  email?: InputMaybe<StringFilter>;
+};
+
+export type UserFilter = {
+  users?: InputMaybe<UserUsersFilter>;
+};
+
+export type UserConnectionEdges = {
+  __typename?: 'UserConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<User>;
+};
+
+export type UserConnection = Connection & {
+  __typename?: 'UserConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<UserConnectionEdges>>>;
+};
 
 export type PagesSectionsSingleTitleHeroSection = {
   __typename?: 'PagesSectionsSingleTitleHeroSection';
@@ -264,13 +343,6 @@ export type Pages = Node & Document & {
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
-};
-
-export type StringFilter = {
-  startsWith?: InputMaybe<Scalars['String']['input']>;
-  eq?: InputMaybe<Scalars['String']['input']>;
-  exists?: InputMaybe<Scalars['Boolean']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type ImageFilter = {
@@ -496,6 +568,9 @@ export type Mutation = {
   deleteDocument: DocumentNode;
   createDocument: DocumentNode;
   createFolder: DocumentNode;
+  updatePassword: Scalars['Boolean']['output'];
+  updateUser: User;
+  createUser: User;
   updatePages: Pages;
   createPages: Pages;
   updateGlobal: Global;
@@ -538,6 +613,23 @@ export type MutationCreateFolderArgs = {
 };
 
 
+export type MutationUpdatePasswordArgs = {
+  password: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  relativePath: Scalars['String']['input'];
+  params: UserMutation;
+};
+
+
+export type MutationCreateUserArgs = {
+  relativePath: Scalars['String']['input'];
+  params: UserMutation;
+};
+
+
 export type MutationUpdatePagesArgs = {
   relativePath: Scalars['String']['input'];
   params: PagesMutation;
@@ -574,6 +666,7 @@ export type MutationCreatePortfolioArgs = {
 };
 
 export type DocumentUpdateMutation = {
+  user?: InputMaybe<UserMutation>;
   pages?: InputMaybe<PagesMutation>;
   global?: InputMaybe<GlobalMutation>;
   portfolio?: InputMaybe<PortfolioMutation>;
@@ -581,9 +674,26 @@ export type DocumentUpdateMutation = {
 };
 
 export type DocumentMutation = {
+  user?: InputMaybe<UserMutation>;
   pages?: InputMaybe<PagesMutation>;
   global?: InputMaybe<GlobalMutation>;
   portfolio?: InputMaybe<PortfolioMutation>;
+};
+
+export type UserUsersPasswordMutation = {
+  value?: InputMaybe<Scalars['String']['input']>;
+  passwordChangeRequired: Scalars['Boolean']['input'];
+};
+
+export type UserUsersMutation = {
+  username?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<UserUsersPasswordMutation>;
+};
+
+export type UserMutation = {
+  users?: InputMaybe<Array<InputMaybe<UserUsersMutation>>>;
 };
 
 export type PagesSectionsSingleTitleHeroSectionMutation = {
@@ -692,18 +802,39 @@ export type PortfolioMutation = {
   linkImage?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UserPartsFragment = { __typename: 'User', users?: Array<{ __typename: 'UserUsers', username: string, name?: string | null, email?: string | null, password: { __typename?: 'UserUsersPassword', value: string, passwordChangeRequired?: boolean | null } } | null> | null };
+
 export type PagesPartsFragment = { __typename: 'Pages', title: string, description?: string | null, sections?: Array<{ __typename: 'PagesSectionsSingleTitleHeroSection', singleTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | { __typename: 'PagesSectionsMultipleTitleHeroSection', sectionDescription?: string | null, heroImage?: string | null, link?: string | null, multipleTitles?: Array<{ __typename: 'PagesSectionsMultipleTitleHeroSectionMultipleTitles', title: string } | null> | null } | { __typename: 'PagesSectionsCompanyDisplaySection', sectionTitle: string, children?: Array<{ __typename: 'PagesSectionsCompanyDisplaySectionChildren', href: string, heroImage?: string | null } | null> | null } | { __typename: 'PagesSectionsProductSection', sectionTitle: string, sectionContent?: string | null, productSectionChild?: Array<{ __typename: 'PagesSectionsProductSectionProductSectionChild', sectionTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | null> | null } | { __typename: 'PagesSectionsServiceSection', author?: string | null, quote?: string | null } | null> | null };
 
 export type GlobalPartsFragment = { __typename: 'Global', header?: { __typename: 'GlobalHeader', title?: string | null, logo?: string | null, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null, label?: string | null, isActive?: boolean | null, children?: Array<{ __typename: 'GlobalHeaderNavChildren', href?: string | null, label?: string | null } | null> | null } | null> | null } | null, footer?: { __typename: 'GlobalFooter', social?: { __typename: 'GlobalFooterSocial', facebook?: string | null, linkedIn?: string | null, twitter?: string | null } | null } | null };
 
 export type PortfolioPartsFragment = { __typename: 'Portfolio', title: string, category: string, category_color?: string | null, description: string, bgColor: string, textColor: string, buttonColor: string, image: string, bgImage: string, linkImage: string };
 
+export type UserQueryVariables = Exact<{
+  relativePath: Scalars['String']['input'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', user: { __typename: 'User', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, users?: Array<{ __typename: 'UserUsers', username: string, name?: string | null, email?: string | null, password: { __typename?: 'UserUsersPassword', value: string, passwordChangeRequired?: boolean | null } } | null> | null } };
+
+export type UserConnectionQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<UserFilter>;
+}>;
+
+
+export type UserConnectionQuery = { __typename?: 'Query', userConnection: { __typename?: 'UserConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'UserConnectionEdges', cursor: string, node?: { __typename: 'User', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, users?: Array<{ __typename: 'UserUsers', username: string, name?: string | null, email?: string | null, password: { __typename?: 'UserUsersPassword', value: string, passwordChangeRequired?: boolean | null } } | null> | null } | null } | null> | null } };
+
 export type PagesQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, title: string, description?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PagesSectionsSingleTitleHeroSection', singleTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | { __typename: 'PagesSectionsMultipleTitleHeroSection', sectionDescription?: string | null, heroImage?: string | null, link?: string | null, multipleTitles?: Array<{ __typename: 'PagesSectionsMultipleTitleHeroSectionMultipleTitles', title: string } | null> | null } | { __typename: 'PagesSectionsCompanyDisplaySection', sectionTitle: string, children?: Array<{ __typename: 'PagesSectionsCompanyDisplaySectionChildren', href: string, heroImage?: string | null } | null> | null } | { __typename: 'PagesSectionsProductSection', sectionTitle: string, sectionContent?: string | null, productSectionChild?: Array<{ __typename: 'PagesSectionsProductSectionProductSectionChild', sectionTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | null> | null } | { __typename: 'PagesSectionsServiceSection', author?: string | null, quote?: string | null } | null> | null } };
+export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, title: string, description?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PagesSectionsSingleTitleHeroSection', singleTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | { __typename: 'PagesSectionsMultipleTitleHeroSection', sectionDescription?: string | null, heroImage?: string | null, link?: string | null, multipleTitles?: Array<{ __typename: 'PagesSectionsMultipleTitleHeroSectionMultipleTitles', title: string } | null> | null } | { __typename: 'PagesSectionsCompanyDisplaySection', sectionTitle: string, children?: Array<{ __typename: 'PagesSectionsCompanyDisplaySectionChildren', href: string, heroImage?: string | null } | null> | null } | { __typename: 'PagesSectionsProductSection', sectionTitle: string, sectionContent?: string | null, productSectionChild?: Array<{ __typename: 'PagesSectionsProductSectionProductSectionChild', sectionTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | null> | null } | { __typename: 'PagesSectionsServiceSection', author?: string | null, quote?: string | null } | null> | null } };
 
 export type PagesConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -715,14 +846,14 @@ export type PagesConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, title: string, description?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PagesSectionsSingleTitleHeroSection', singleTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | { __typename: 'PagesSectionsMultipleTitleHeroSection', sectionDescription?: string | null, heroImage?: string | null, link?: string | null, multipleTitles?: Array<{ __typename: 'PagesSectionsMultipleTitleHeroSectionMultipleTitles', title: string } | null> | null } | { __typename: 'PagesSectionsCompanyDisplaySection', sectionTitle: string, children?: Array<{ __typename: 'PagesSectionsCompanyDisplaySectionChildren', href: string, heroImage?: string | null } | null> | null } | { __typename: 'PagesSectionsProductSection', sectionTitle: string, sectionContent?: string | null, productSectionChild?: Array<{ __typename: 'PagesSectionsProductSectionProductSectionChild', sectionTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | null> | null } | { __typename: 'PagesSectionsServiceSection', author?: string | null, quote?: string | null } | null> | null } | null } | null> | null } };
+export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, title: string, description?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PagesSectionsSingleTitleHeroSection', singleTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | { __typename: 'PagesSectionsMultipleTitleHeroSection', sectionDescription?: string | null, heroImage?: string | null, link?: string | null, multipleTitles?: Array<{ __typename: 'PagesSectionsMultipleTitleHeroSectionMultipleTitles', title: string } | null> | null } | { __typename: 'PagesSectionsCompanyDisplaySection', sectionTitle: string, children?: Array<{ __typename: 'PagesSectionsCompanyDisplaySectionChildren', href: string, heroImage?: string | null } | null> | null } | { __typename: 'PagesSectionsProductSection', sectionTitle: string, sectionContent?: string | null, productSectionChild?: Array<{ __typename: 'PagesSectionsProductSectionProductSectionChild', sectionTitle: string, sectionDescription?: string | null, heroImage?: string | null, link?: string | null } | null> | null } | { __typename: 'PagesSectionsServiceSection', author?: string | null, quote?: string | null } | null> | null } | null } | null> | null } };
 
 export type GlobalQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type GlobalQuery = { __typename?: 'Query', global: { __typename: 'Global', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, header?: { __typename: 'GlobalHeader', title?: string | null, logo?: string | null, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null, label?: string | null, isActive?: boolean | null, children?: Array<{ __typename: 'GlobalHeaderNavChildren', href?: string | null, label?: string | null } | null> | null } | null> | null } | null, footer?: { __typename: 'GlobalFooter', social?: { __typename: 'GlobalFooterSocial', facebook?: string | null, linkedIn?: string | null, twitter?: string | null } | null } | null } };
+export type GlobalQuery = { __typename?: 'Query', global: { __typename: 'Global', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, header?: { __typename: 'GlobalHeader', title?: string | null, logo?: string | null, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null, label?: string | null, isActive?: boolean | null, children?: Array<{ __typename: 'GlobalHeaderNavChildren', href?: string | null, label?: string | null } | null> | null } | null> | null } | null, footer?: { __typename: 'GlobalFooter', social?: { __typename: 'GlobalFooterSocial', facebook?: string | null, linkedIn?: string | null, twitter?: string | null } | null } | null } };
 
 export type GlobalConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -734,14 +865,14 @@ export type GlobalConnectionQueryVariables = Exact<{
 }>;
 
 
-export type GlobalConnectionQuery = { __typename?: 'Query', globalConnection: { __typename?: 'GlobalConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'GlobalConnectionEdges', cursor: string, node?: { __typename: 'Global', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, header?: { __typename: 'GlobalHeader', title?: string | null, logo?: string | null, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null, label?: string | null, isActive?: boolean | null, children?: Array<{ __typename: 'GlobalHeaderNavChildren', href?: string | null, label?: string | null } | null> | null } | null> | null } | null, footer?: { __typename: 'GlobalFooter', social?: { __typename: 'GlobalFooterSocial', facebook?: string | null, linkedIn?: string | null, twitter?: string | null } | null } | null } | null } | null> | null } };
+export type GlobalConnectionQuery = { __typename?: 'Query', globalConnection: { __typename?: 'GlobalConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'GlobalConnectionEdges', cursor: string, node?: { __typename: 'Global', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, header?: { __typename: 'GlobalHeader', title?: string | null, logo?: string | null, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null, label?: string | null, isActive?: boolean | null, children?: Array<{ __typename: 'GlobalHeaderNavChildren', href?: string | null, label?: string | null } | null> | null } | null> | null } | null, footer?: { __typename: 'GlobalFooter', social?: { __typename: 'GlobalFooterSocial', facebook?: string | null, linkedIn?: string | null, twitter?: string | null } | null } | null } | null } | null> | null } };
 
 export type PortfolioQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type PortfolioQuery = { __typename?: 'Query', portfolio: { __typename: 'Portfolio', id: string, title: string, category: string, category_color?: string | null, description: string, bgColor: string, textColor: string, buttonColor: string, image: string, bgImage: string, linkImage: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type PortfolioQuery = { __typename?: 'Query', portfolio: { __typename: 'Portfolio', id: string, title: string, category: string, category_color?: string | null, description: string, bgColor: string, textColor: string, buttonColor: string, image: string, bgImage: string, linkImage: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type PortfolioConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -753,8 +884,23 @@ export type PortfolioConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PortfolioConnectionQuery = { __typename?: 'Query', portfolioConnection: { __typename?: 'PortfolioConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PortfolioConnectionEdges', cursor: string, node?: { __typename: 'Portfolio', id: string, title: string, category: string, category_color?: string | null, description: string, bgColor: string, textColor: string, buttonColor: string, image: string, bgImage: string, linkImage: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type PortfolioConnectionQuery = { __typename?: 'Query', portfolioConnection: { __typename?: 'PortfolioConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PortfolioConnectionEdges', cursor: string, node?: { __typename: 'Portfolio', id: string, title: string, category: string, category_color?: string | null, description: string, bgColor: string, textColor: string, buttonColor: string, image: string, bgImage: string, linkImage: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
+export const UserPartsFragmentDoc = gql`
+    fragment UserParts on User {
+  __typename
+  users {
+    __typename
+    username
+    name
+    email
+    password {
+      value
+      passwordChangeRequired
+    }
+  }
+}
+    `;
 export const PagesPartsFragmentDoc = gql`
     fragment PagesParts on Pages {
   __typename
@@ -848,6 +994,63 @@ export const PortfolioPartsFragmentDoc = gql`
   linkImage
 }
     `;
+export const UserDocument = gql`
+    query user($relativePath: String!) {
+  user(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...UserParts
+  }
+}
+    ${UserPartsFragmentDoc}`;
+export const UserConnectionDocument = gql`
+    query userConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: UserFilter) {
+  userConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...UserParts
+      }
+    }
+  }
+}
+    ${UserPartsFragmentDoc}`;
 export const PagesDocument = gql`
     query pages($relativePath: String!) {
   pages(relativePath: $relativePath) {
@@ -855,6 +1058,7 @@ export const PagesDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -890,6 +1094,7 @@ export const PagesConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -910,6 +1115,7 @@ export const GlobalDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -945,6 +1151,7 @@ export const GlobalConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -965,6 +1172,7 @@ export const PortfolioDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -1000,6 +1208,7 @@ export const PortfolioConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -1016,7 +1225,13 @@ export const PortfolioConnectionDocument = gql`
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
-      pages(variables: PagesQueryVariables, options?: C): Promise<{data: PagesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesQueryVariables, query: string}> {
+      user(variables: UserQueryVariables, options?: C): Promise<{data: UserQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: UserQueryVariables, query: string}> {
+        return requester<{data: UserQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: UserQueryVariables, query: string}, UserQueryVariables>(UserDocument, variables, options);
+      },
+    userConnection(variables?: UserConnectionQueryVariables, options?: C): Promise<{data: UserConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: UserConnectionQueryVariables, query: string}> {
+        return requester<{data: UserConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: UserConnectionQueryVariables, query: string}, UserConnectionQueryVariables>(UserConnectionDocument, variables, options);
+      },
+    pages(variables: PagesQueryVariables, options?: C): Promise<{data: PagesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesQueryVariables, query: string}> {
         return requester<{data: PagesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesQueryVariables, query: string}, PagesQueryVariables>(PagesDocument, variables, options);
       },
     pagesConnection(variables?: PagesConnectionQueryVariables, options?: C): Promise<{data: PagesConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesConnectionQueryVariables, query: string}> {
@@ -1081,7 +1296,7 @@ export const ExperimentalGetTinaClient = () =>
   getSdk(
     generateRequester(
       createClient({
-        url: "http://localhost:4001/graphql",
+        url: "/api/tina/gql",
         queries,
       })
     )

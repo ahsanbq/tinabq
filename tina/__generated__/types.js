@@ -5,6 +5,21 @@ export function gql(strings, ...args) {
   });
   return str;
 }
+export const UserPartsFragmentDoc = gql`
+    fragment UserParts on User {
+  __typename
+  users {
+    __typename
+    username
+    name
+    email
+    password {
+      value
+      passwordChangeRequired
+    }
+  }
+}
+    `;
 export const PagesPartsFragmentDoc = gql`
     fragment PagesParts on Pages {
   __typename
@@ -98,6 +113,63 @@ export const PortfolioPartsFragmentDoc = gql`
   linkImage
 }
     `;
+export const UserDocument = gql`
+    query user($relativePath: String!) {
+  user(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...UserParts
+  }
+}
+    ${UserPartsFragmentDoc}`;
+export const UserConnectionDocument = gql`
+    query userConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: UserFilter) {
+  userConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...UserParts
+      }
+    }
+  }
+}
+    ${UserPartsFragmentDoc}`;
 export const PagesDocument = gql`
     query pages($relativePath: String!) {
   pages(relativePath: $relativePath) {
@@ -105,6 +177,7 @@ export const PagesDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -140,6 +213,7 @@ export const PagesConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -160,6 +234,7 @@ export const GlobalDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -195,6 +270,7 @@ export const GlobalConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -215,6 +291,7 @@ export const PortfolioDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -250,6 +327,7 @@ export const PortfolioConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -265,6 +343,12 @@ export const PortfolioConnectionDocument = gql`
     ${PortfolioPartsFragmentDoc}`;
 export function getSdk(requester) {
   return {
+    user(variables, options) {
+      return requester(UserDocument, variables, options);
+    },
+    userConnection(variables, options) {
+      return requester(UserConnectionDocument, variables, options);
+    },
     pages(variables, options) {
       return requester(PagesDocument, variables, options);
     },
@@ -305,7 +389,7 @@ const generateRequester = (client) => {
 export const ExperimentalGetTinaClient = () => getSdk(
   generateRequester(
     createClient({
-      url: "http://localhost:4001/graphql",
+      url: "/api/tina/gql",
       queries
     })
   )

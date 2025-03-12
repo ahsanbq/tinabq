@@ -1,5 +1,6 @@
 import useWindowSize from "@/hooks/useWindowSize";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import Image from "next/image";
 import { useTypewriter } from "react-simple-typewriter";
 import editAnimation from "./../../public/images/animation/calendar/calendar.json";

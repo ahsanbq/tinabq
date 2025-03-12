@@ -1,4 +1,5 @@
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import { useRef, useState } from "react";
 import editAnimation from "./../public/images/animation/contact/contact-1.json";
 import { useGlobalData } from "./Context/GlobalDataContext";

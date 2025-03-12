@@ -1,5 +1,6 @@
 // tina/config.js
-import { defineConfig } from "tinacms";
+import { UsernamePasswordAuthJSProvider, TinaUserCollection } from "tinacms-authjs/dist/tinacms";
+import { defineConfig, LocalAuthProvider } from "tinacms";
 
 // tina/collection/global.js
 var Global = {
@@ -444,7 +445,10 @@ var Portfolio = {
 var portfolio_default = Portfolio;
 
 // tina/config.js
+var isLocal = process.env.TINA_PUBLIC_IS_LOCAL === "true";
 var config_default = defineConfig({
+  contentApiUrlOverride: "/api/tina/gql",
+  authProvider: isLocal ? new LocalAuthProvider() : new UsernamePasswordAuthJSProvider(),
   branch: "main",
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
   token: process.env.TINA_TOKEN,
@@ -459,7 +463,12 @@ var config_default = defineConfig({
     }
   },
   schema: {
-    collections: [page_default, global_default, portfolio_default]
+    collections: [
+      TinaUserCollection,
+      page_default,
+      global_default,
+      portfolio_default
+    ]
   },
   search: {
     tina: {
