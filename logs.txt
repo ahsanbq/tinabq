@@ -1,0 +1,8 @@
+IP: ::1 | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 | Lat: 23.7534 | Lon: 90.3722 | Time: 2025-01-27T11:25:55.938Z
+IP: ::1 | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 | Lat: 23.7534 | Lon: 90.3722 | Time: 2025-01-27T11:27:29.552Z
+IP: ::1 | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 | Time: 2025-01-27T11:30:04.816Z
+Geolocation Data: {
+  "status": "fail",
+  "message": "reserved range",
+  "query": "::1"
+}

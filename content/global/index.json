@@ -1,0 +1,61 @@
+{
+  "header": {
+    "title": "binaryquest",
+    "logo": "/images/logo/bq-logo-icon.svg",
+    "nav": [
+      {
+        "href": "/",
+        "label": "Home",
+        "isActive": false
+      },
+      {
+        "href": "/product",
+        "label": "Products",
+        "isActive": false,
+        "children": [
+          {
+            "href": "/product/scm",
+            "label": " Supply Chain Management (SCM)"
+          },
+          {
+            "href": "/product/erp",
+            "label": "Enterprise Resource Planning (ERP)"
+          }
+        ]
+      },
+      {
+        "href": "/service",
+        "label": "Service",
+        "children": [
+          {
+            "href": "/service/teamaugmentation",
+            "label": "Team Augmentation"
+          },
+          {
+            "href": "/service",
+            "label": "Oddo"
+          }
+        ]
+      },
+      {
+        "href": "/industries",
+        "label": "Industries"
+      },
+      {
+        "href": "/portfolio",
+        "label": "Portfolio"
+      },
+      {
+        "href": "/insight",
+        "label": "Insight"
+      }
+    ]
+  },
+  "footer": {
+    "social": {
+      "facebook": "https://www.facebook.com/binaryquest",
+      "linkedIn": "https://www.linkedin.com/company/binaryquest",
+      "twitter": "https://x.com/BinaryQuest"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+fragment PagesParts on Pages {
+  __typename
+  title
+  description
+  sections {
+    __typename
+    ... on PagesSectionsSingleTitleHeroSection {
+      singleTitle
+      sectionDescription
+      heroImage
+      link
+    }
+    ... on PagesSectionsMultipleTitleHeroSection {
+      multipleTitles {
+        __typename
+        title
+      }
+      sectionDescription
+      heroImage
+      link
+    }
+    ... on PagesSectionsCompanyDisplaySection {
+      sectionTitle
+      children {
+        __typename
+        href
+        heroImage
+      }
+    }
+    ... on PagesSectionsProductSection {
+      sectionTitle
+      sectionContent
+      productSectionChild {
+        __typename
+        sectionTitle
+        sectionDescription
+        heroImage
+        link
+      }
+    }
+    ... on PagesSectionsServiceSection {
+      author
+      quote
+    }
+  }
+}
+
+fragment GlobalParts on Global {
+  __typename
+  header {
+    __typename
+    title
+    logo
+    nav {
+      __typename
+      href
+      label
+      isActive
+      children {
+        __typename
+        href
+        label
+      }
+    }
+  }
+  footer {
+    __typename
+    social {
+      __typename
+      facebook
+      linkedIn
+      twitter
+    }
+  }
+}
+
+fragment PortfolioParts on Portfolio {
+  __typename
+  title
+  category
+  category_color
+  description
+  bgColor
+  textColor
+  buttonColor
+  image
+  bgImage
+  linkImage
+}

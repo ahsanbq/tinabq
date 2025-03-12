@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /product
+Disallow: /insight
+Disallow: /service/
+Disallow: /portfolio
+Disallow: /service
+
+
+# Sitemaps
+Sitemap: https://www.binaryquest.com/sitemap.xml
