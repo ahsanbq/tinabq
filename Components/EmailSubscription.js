@@ -75,7 +75,7 @@ const EmailSubscription = ({ googleReCaptchaProps }) => {
           type='submit'
           className='px-4 py-2 font-medium text-white bg-gradient-to-r from-[#70499B] via-[#A62D82] to-[#CB1A71] hover:from-purple-800 hover:to-purple-500 focus:outline-none w-60 md:w-1/4'
         >
-          subscribe
+          subscribe here
         </button>
       </form>
     </div>
